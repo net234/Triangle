@@ -40,9 +40,9 @@ animLed_t animLed7 ;
 animLed_t animLed8 ;
 animLed_t animLed9 ;
 
-const uint8_t max_led = 9
+const uint8_t max_led = 9;
 animLed_t* ledSet[max_led] {&animLed1, &animLed2, &animLed3, &animLed4, &animLed5, &animLed6, &animLed7, &animLed8, &animLed9 };
-int clockStep = -1;
+//int clockStep = -1;
 
 
 
@@ -56,9 +56,6 @@ e_rvb baseColor = rvb_orange;
 
 
 void setup() {
-  // Initialisation Hard des IO
-  //  pinMode(LED_LIFE, OUTPUT);
-  //  pinMode(BP0, INPUT_PULLUP);
 
   // Serial
   Serial.begin(115200);
@@ -70,12 +67,6 @@ void setup() {
 
 }
 
-int N = 1;
-//bool BP0Down = HIGH;
-
-
-
-
 
 void loop() {
   MyEvents.getEvent();       // get standart event
@@ -86,36 +77,23 @@ void loop() {
 
     case ev100Hz:
       // refresh led
-      animLed1.led.write();
-      animLed2.led.write();
-      animLed3.led.write();
-      animLed4.led.write();
-      animLed5.led.write();
-      animLed6.led.write();
-      animLed7.led.write();
-      animLed8.led.write();
-      animLed9.led.write();
+      for (int8_t N = 0 ; N < max_led; N++) {
+        ledSet[N]->led.write();
+      }
       animLed1.led.reset();
-      animLed1.step(MyEvents.currentEvent.ext);
-      animLed2.step(MyEvents.currentEvent.ext);
-      animLed3.step(MyEvents.currentEvent.ext);
-      animLed4.step(MyEvents.currentEvent.ext);
-      animLed5.step(MyEvents.currentEvent.ext);
-      animLed6.step(MyEvents.currentEvent.ext);
-      animLed7.step(MyEvents.currentEvent.ext);
-      animLed8.step(MyEvents.currentEvent.ext);
-      animLed9.step(MyEvents.currentEvent.ext);
-
-
+      for (int8_t N = 0 ; N < max_led; N++) {
+        ledSet[N]->step(MyEvents.currentEvent.ext);
+      }
       break;
 
 
     case  evNewLed: {
-        MyEvents.pushDelayEvent(1500 + random(0, 2000), evNewLed);
-        int aLed = random(0, max_led);
-        while (ledSet[aLed]->enable ) aLed = random(0, max_led);
+        MyEvents.pushDelayEvent(500,evNewLed);
+        static uint8_t aLed = 0;
         D_println(aLed);
-        ledSet[aLed]->set(250, 50, 250, baseColor, 100);
+        ledSet[aLed]->set(100, 100, 100, baseColor, 100);
+        aLed++;
+        if (aLed>=max_led) aLed = 0;
       }
       break;
 
@@ -137,7 +115,7 @@ void loop() {
           Serial.println(F("BP0 Down"));
           baseColor = (e_rvb)(baseColor + 1);
           if (baseColor == rvb_black) baseColor = rvb_white;
-          animLed1.set(200, 10, 200, baseColor, 100);
+          //animLed1.set(200, 10, 200, baseColor, 100);
           break;
 
         case evxBPLongDown:
