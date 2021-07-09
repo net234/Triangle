@@ -20,6 +20,7 @@ enum myEvent  {
   evBP0 = 100,
   evLed0,
   evNewLed,
+  evNewSpeed,
 };
 
 // Gestionaire d'evenemnt
@@ -65,8 +66,18 @@ void setup() {
   MyEvents.begin();
   MyEvents.pushDelayEvent(1000, evNewLed);
 
+  //D9 = 0V
+  pinMode(9, OUTPUT);
+  digitalWrite(9, LOW);
+
+
 }
 
+
+int8_t rotateSpeed = 0;
+int8_t potar1 = 0;
+bool   rotateClock = true;
+uint8_t currentLed = 0;
 
 void loop() {
   MyEvents.getEvent();       // get standart event
@@ -74,6 +85,19 @@ void loop() {
 
   switch (MyEvents.currentEvent.code)
   {
+
+    case ev10Hz: {
+        int16_t N = analogRead(A0);
+        static int16_t potar1read = 0;
+        potar1read = (potar1read  + map(N, 0, 1023, -100, 100)) / 2;
+        if (potar1read != potar1) {
+          potar1 = potar1read;
+          MyEvents.pushEvent(evNewSpeed);
+          D_println(potar1read);
+        }
+
+      }
+      break;
 
     case ev100Hz:
       // refresh led
@@ -86,15 +110,24 @@ void loop() {
       }
       break;
 
-
-    case  evNewLed: {
-        MyEvents.pushDelayEvent(500,evNewLed);
-        static uint8_t aLed = 0;
-        D_println(aLed);
-        ledSet[aLed]->set(100, 100, 100, baseColor, 100);
-        aLed++;
-        if (aLed>=max_led) aLed = 0;
+    case evNewSpeed: {
+        bool speedWas0 = (rotateSpeed == 0);
+        //D_println(potar1);
+        rotateSpeed = 100-abs(potar1);
+        rotateClock = potar1 >= 0;
+        if (speedWas0) MyEvents.pushDelayEvent(500  * rotateSpeed / 100, evNewLed);
+        D_println(rotateSpeed);
       }
+      break;
+
+
+    case  evNewLed:
+     
+      if (rotateSpeed != 0) MyEvents.pushDelayEvent(500  * rotateSpeed / 100, evNewLed);
+      ledSet[currentLed]->set(100, 100, 100, baseColor, 100);
+      currentLed = (currentLed + (rotateClock ? 1 : max_led-1) ) % max_led;
+
+
       break;
 
 
