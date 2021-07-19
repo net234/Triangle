@@ -12,7 +12,7 @@ struct animLed_t {
   uint16_t delay3;
   e_rvb color;
   byte level;
-  WS2812rvb_t led;
+  WS2812rvbw_t led;
   void set( const uint16_t delay1, const uint16_t delay2, const uint16_t delay3, const e_rvb color, const uint8_t level);
   void step(const uint8_t nstep);
   void step();

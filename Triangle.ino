@@ -87,13 +87,15 @@ void loop() {
   {
 
     case ev10Hz: {
+      // lecture du potentiometre
+      const int lissage = 3;
         int16_t N = analogRead(A0);
-        static int16_t potar1read = 0;
-        potar1read = (potar1read  + map(N, 0, 1023, -100, 100)) / 2;
-        if (potar1read != potar1) {
-          potar1 = potar1read;
+        N = map(N, 0, 1023, -100, 100);
+        N = (N +  potar1 * (lissage -1)) / lissage;
+        if (N != potar1) {
+          potar1 = N;
           MyEvents.pushEvent(evNewSpeed);
-          D_println(potar1read);
+          D_println(potar1);
         }
 
       }
@@ -115,7 +117,7 @@ void loop() {
         //D_println(potar1);
         rotateSpeed = 100-abs(potar1);
         rotateClock = potar1 >= 0;
-        if (speedWas0) MyEvents.pushDelayEvent(500  * rotateSpeed / 100, evNewLed);
+        if (speedWas0) MyEvents.pushDelayEvent(100 + (500  * rotateSpeed / 100), evNewLed);
         D_println(rotateSpeed);
       }
       break;
@@ -123,8 +125,8 @@ void loop() {
 
     case  evNewLed:
      
-      if (rotateSpeed != 0) MyEvents.pushDelayEvent(500  * rotateSpeed / 100, evNewLed);
-      ledSet[currentLed]->set(100, 100, 100, baseColor, 100);
+      if (rotateSpeed != 0) MyEvents.pushDelayEvent(100 + (500  * rotateSpeed / 100), evNewLed);
+      ledSet[currentLed]->set(100, 10, 100, random(0,MAX_e_rvb), 100);
       currentLed = (currentLed + (rotateClock ? 1 : max_led-1) ) % max_led;
 
 

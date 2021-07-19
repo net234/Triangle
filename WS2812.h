@@ -36,8 +36,18 @@ const rvb_t map_color[MAX_e_rvb] = {
 struct WS2812rvb_t : rvb_t {
   void  reset();
   void  write();
-  private:
   void shift(uint8_t color);
+  //void  WS2812Write(const rvbw_t &color);
+  //void  setcolor(rvbw_t &rbv_s, const e_rvb color, const int level);
+};
+
+
+struct WS2812rvbw_t : WS2812rvb_t {
+  void  write();
+  uint8_t White;
+  void  setcolor(const e_rvb color, const uint8_t level);
+  private:
+  //void shift(uint8_t color);
   //void  WS2812Write(const rvbw_t &color);
   //void  setcolor(rvbw_t &rbv_s, const e_rvb color, const int level);
 };

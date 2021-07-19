@@ -24,4 +24,4 @@
 #define LED_ON  HIGH
 
 #define pinBP0 8 // D2
-#define PIN_WS2812 2 // D8
+#define PIN_WS2812 5  //2 // D8

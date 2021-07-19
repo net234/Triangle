@@ -24,11 +24,11 @@ inline  void WS2812_LOW() __attribute__((always_inline));
 inline  void WS2812_HIGH() __attribute__((always_inline));
 
 void WS2812_LOW() {
-  PORTD &= !MSK_WS2812;
+  PORTB &= !MSK_WS2812;
 }
 
 void WS2812_HIGH() {
-  PORTD |= MSK_WS2812;
+  PORTB |= MSK_WS2812;
 }
 
 
@@ -73,9 +73,24 @@ void  WS2812rvb_t::write() {
   this->shift(this->Blue);
 }
 
+void  WS2812rvbw_t::write() {
+  WS2812rvb_t::write();
+  this->shift(this->White);
+}
 
 void  rvb_t::setcolor( const e_rvb color, const uint8_t level)  {
   this->Red =   (uint16_t)map_color[color].Red * level / 100;
   this->Green = (uint16_t)map_color[color].Green * level / 100;
   this->Blue =  (uint16_t)map_color[color].Blue * level / 100;
+}
+
+void  WS2812rvbw_t::setcolor( const e_rvb color, const uint8_t level)  {
+  rvb_t::setcolor(color, level);
+  this->White = this->Red;
+  if (this->White > this->Blue) this->White = this->Blue;
+  if (this->White > this->Green) this->White = this->Green;
+  
+  this->Red -=  this->White;
+  this->Green -=  this->White;
+  this->Blue -=  this->White;
 }
