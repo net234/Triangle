@@ -12,7 +12,7 @@
 #define D5      //
 #define D6      //
 #define D7      //           BP1  
-#define D8      //           BP0   
+#define D8      //           Bandeau de led (PIN_WS2812) 
 #define D9      //!RF24_CSN
 #define D10     //!RF24_CE
 #define D11     //!SPI_MOSI

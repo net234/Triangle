@@ -24,7 +24,7 @@ inline  void WS2812_LOW() __attribute__((always_inline));
 inline  void WS2812_HIGH() __attribute__((always_inline));
 
 void WS2812_LOW() {
-  PORTB &= !MSK_WS2812;
+  PORTB &= ~MSK_WS2812;
 }
 
 void WS2812_HIGH() {

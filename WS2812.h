@@ -21,7 +21,7 @@ struct  rvb_t {
 };
 
 const rvb_t map_color[MAX_e_rvb] = {
-  {255, 255, 255}, // rvb_white
+  {100, 100, 100}, // rvb_white
   {255,   0,   0}, // rvb_red
   {  0, 255,   0}, // rvb_green
   {  0,   0, 255}, // rvb_blue
